@@ -89,7 +89,11 @@ jobs:
           if [ "${{ inputs.package_manager }}" = "npm" ]; then
             npm cache verify
           fi
-          ${{ inputs.install_cmd }}
+          if [ "${{ inputs.package_manager }}" = "pnpm" ]; then
+            (${{ inputs.install_cmd }}) || pnpm install --no-frozen-lockfile
+          else
+            ${{ inputs.install_cmd }}
+          fi
           if [ "${{ inputs.package_manager }}" = "npm" ]; then
             npm install --no-save @tailwindcss/oxide-linux-x64-gnu --include=optional || true
             npm rebuild @tailwindcss/oxide @tailwindcss/oxide-linux-x64-gnu || true
